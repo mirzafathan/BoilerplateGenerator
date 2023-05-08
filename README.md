@@ -1,6 +1,6 @@
 # BoilerplateGenerator
 
-1. To generate boilerplates, run a command with the following on your terminal
+1. To generate boilerplates, run a command with the following format on your terminal
 ```console
 python generate.py [boilerplate_1.zip] [boilerplate_2.zip] ...
 ```
