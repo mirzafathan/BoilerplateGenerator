@@ -9,17 +9,13 @@ def extract_zip(zip_file, source_directory):
         zip_ref.extractall(script_directory)
 
 def edit_pytorch_model_image_segmentation(model_name):
-    # Read the Java source code file
     with open('./ImageSegmentation/app/src/main/java/org/pytorch/imagesegmentation/MainActivity.java', 'r') as file:
         java_code = file.read()
 
-    # Define the new line of code
     new_line = f'LiteModuleLoader.load(MainActivity.assetFilePath(getApplicationContext(), "{model_name}"));'
 
-    # Find and replace the old line with the new line in the Java code
     modified_java_code = java_code.replace('LiteModuleLoader.load(MainActivity.assetFilePath(getApplicationContext(), "deeplabv3_scripted_optimized.ptl"));', new_line)
 
-    # Write the modified Java code to a new file
     with open('./ImageSegmentation/app/src/main/java/org/pytorch/imagesegmentation/MainActivity.java', 'w') as file:
         file.write(modified_java_code)
 
@@ -28,13 +24,10 @@ def edit_pytorch_model_speech_recognition(model_name):
     with open('./SpeechRecognition/app/src/main/java/org/pytorch/demo/speechrecognition/MainActivity.java', 'r') as file:
         java_code = file.read()
 
-    # Define the new line of code
     new_line = f'LiteModuleLoader.load(assetFilePath(getApplicationContext(), "{model_name}"));'
 
-    # Find and replace the old line with the new line in the Java code
     modified_java_code = java_code.replace('LiteModuleLoader.load(assetFilePath(getApplicationContext(), "wav2vec2.ptl"));', new_line)
 
-    # Write the modified Java code to a new file
     with open('./SpeechRecognition/app/src/main/java/org/pytorch/demo/speechrecognition/MainActivity.java', 'w') as file:
         file.write(modified_java_code)
 
@@ -43,12 +36,12 @@ if __name__ == '__main__':
     if len(sys.argv) != 3 or sys.argv[1] == '-h':
         print("Usage: python generate.py [boilerplate project] [pytorch model directory]")
         print("Available options:")
-        folder_path = "./BoilerplateCompressed"  # Replace with the folder path where your zip files are located
+        folder_path = "./BoilerplateCompressed"  
         zip_files = [f for f in os.listdir(folder_path) if f.endswith('.zip')]
         for zip_file in zip_files:
             print("- " + zip_file[:-4])
     else:
-        compressed_files_directory = "./BoilerplateCompressed"  # Replace with the directory where the compressed files are located
+        compressed_files_directory = "./BoilerplateCompressed" 
         zip_file = sys.argv[1] + ".zip"
         extract_zip(zip_file, compressed_files_directory)
         print(f"Boilerplate for {sys.argv[1]} has been generated!")
