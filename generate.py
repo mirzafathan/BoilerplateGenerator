@@ -8,13 +8,17 @@ def extract_zip(zip_file, source_directory):
     with zipfile.ZipFile(os.path.join(source_directory, zip_file), 'r') as zip_ref:
         zip_ref.extractall(script_directory)
 
-def edit_main_activity(dir_main_activity, default_model, new_model):
-    with open(dir_main_activity, 'r') as file:
+def edit_main_activity(project_name, default_model, new_model):
+    lower_case = project_name.lower()
+    main_activity_dir = f'./{project_name}/app/src/main/java/org/pytorch/demo/{lower_case}/MainActivity.java'
+    if(not os.path.exists(main_activity_dir)):
+        main_activity_dir = main_activity_dir[:-4] + "kt"
+    with open(main_activity_dir, 'r') as file:
         main_activity = file.read()
 
     modified_main_activity = main_activity.replace(default_model, f'{new_model}')
 
-    with open(dir_main_activity, 'w') as file:
+    with open(main_activity_dir, 'w') as file:
         file.write(modified_main_activity)
 
 if __name__ == '__main__':
@@ -30,30 +34,6 @@ if __name__ == '__main__':
         zip_file = sys.argv[1] + ".zip"
         extract_zip(zip_file, compressed_files_directory)
         print(f"Boilerplate for {sys.argv[1]} has been generated!")
-
-        if(sys.argv[1]=="image_segmentation"):
-            shutil.copy(sys.argv[2], "./ImageSegmentation/app/src/main/assets")
-            model_file_name = os.path.basename(sys.argv[2])
-            edit_main_activity('./ImageSegmentation/app/src/main/java/org/pytorch/imagesegmentation/MainActivity.java',
-                   'deeplabv3_scripted_optimized.ptl', model_file_name)
-        
-        elif(sys.argv[1]=="speech_recognition"):
-            shutil.copy(sys.argv[2], "./SpeechRecognition/app/src/main/assets")
-            model_file_name = os.path.basename(sys.argv[2])
-            edit_main_activity('./SpeechRecognition/app/src/main/java/org/pytorch/demo/speechrecognition/MainActivity.java',
-                               'wav2vec2.ptl', model_file_name)
-            
-        elif(sys.argv[1]=="object_detection"):
-            shutil.copy(sys.argv[2], "./ObjectDetection/app/src/main/assets")
-            model_file_name = os.path.basename(sys.argv[2])
-            edit_main_activity('./ObjectDetection/app/src/main/java/org/pytorch/demo/objectdetection/MainActivity.java',
-                               'yolov5s.torchscript.ptl', model_file_name)
-
-        elif(sys.argv[1]=="question_answering"):
-            shutil.copy(sys.argv[2], "./QuestionAnswering/app/src/main/assets")
-            model_file_name = os.path.basename(sys.argv[2])
-            edit_main_activity('./QuestionAnswering/app/src/main/java/org/pytorch/demo/questionanswering/MainActivity.kt',
-                               'qa360_quantized.ptl', model_file_name)
-            
-        else:
-            print(f'No boilerplate available for project ${sys.argv[1]}')
+        model_file_name = os.path.basename(sys.argv[2])
+        shutil.copy(sys.argv[2], f"./{sys.argv[1]}/app/src/main/assets")
+        edit_main_activity(sys.argv[1], 'model_name', model_file_name)
